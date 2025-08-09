@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TC11 — Club de Tennis</title>
+  <meta name="description" content="TC11 — Club de tennis convivial : écoles de tennis, équipes, tournois, réservations, actus et contact." />
+  <meta name="theme-color" content="#0ea5e9" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS (CDN for prototypage; pour la prod, préférer un build Tailwind) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
+          colors: { brand: { DEFAULT: '#0ea5e9', dark: '#0284c7' } }
+        }
+      },
+      darkMode: 'class'
+    }
+  </script>
+
+  <!-- Swiper (galerie + témoignages) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <!-- Leaflet (plan) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+  <!-- Styles additionnels légers -->
+  <style>
+    html, body { height: 100%; }
+    .glass { backdrop-filter: saturate(180%) blur(8px); background: rgba(255,255,255,0.7); }
+    .dark .glass { background: rgba(17,24,39,0.6); }
+  </style>
+</head>
+<body x-data="tc11App()" x-init="init()" :class="{dark: darkMode}" class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Day.js (dates) -->
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+  <!-- Swiper -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Iconify (icônes) -->
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+
+  <!-- TOP BAR / NAV -->
+  <header class="sticky top-0 z-50">
+    <div class="glass border-b border-white/10 dark:border-gray-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <a href="#accueil" class="flex items-center gap-3">
+            <img src="https://dummyimage.com/40x40/0ea5e9/ffffff&text=T" alt="TC11" class="rounded-xl shadow" />
+            <span class="font-extrabold text-lg tracking-tight">TC11</span>
+          </a>
+          <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+            <a class="hover:text-brand" href="#club">Le club</a>
+            <a class="hover:text-brand" href="#ecole">École</a>
+            <a class="hover:text-brand" href="#equipes">Équipes</a>
+            <a class="hover:text-brand" href="#planning">Planning</a>
+            <a class="hover:text-brand" href="#tarifs">Tarifs</a>
+            <a class="hover:text-brand" href="#actus">Actus</a>
+            <a class="hover:text-brand" href="#galerie">Galerie</a>
+            <a class="hover:text-brand" href="#contact">Contact</a>
+          </nav>
+          <div class="flex items-center gap-2">
+            <button @click="toggleTheme" class="p-2 rounded-xl bg-white/70 dark:bg-gray-800 hover:bg-white dark:hover:bg-gray-700 transition shadow">
+              <span class="iconify inline-block" data-icon="ph:sun-bold" x-show="!darkMode"></span>
+              <span class="iconify inline-block" data-icon="ph:moon-bold" x-show="darkMode"></span>
+            </button>
+            <a href="#adhesion" class="hidden sm:inline-flex items-center gap-2 bg-brand hover:bg-brand-dark text-white px-4 py-2 rounded-xl shadow transition">
+              <span class="iconify" data-icon="ph:tennis-ball-duotone"></span> Adhérer
+            </a>
+            <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-xl bg-white/70 dark:bg-gray-800 hover:bg-white dark:hover:bg-gray-700 transition shadow">
+              <span class="iconify" data-icon="ph:list-bold"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Mobile menu -->
+      <div x-show="mobileOpen" x-transition class="md:hidden border-t border-white/10 dark:border-gray-800">
+        <div class="px-4 py-3 space-y-3 text-sm">
+          <a class="block" href="#club" @click="mobileOpen=false">Le club</a>
+          <a class="block" href="#ecole" @click="mobileOpen=false">École</a>
+          <a class="block" href="#equipes" @click="mobileOpen=false">Équipes</a>
+          <a class="block" href="#planning" @click="mobileOpen=false">Planning</a>
+          <a class="block" href="#tarifs" @click="mobileOpen=false">Tarifs</a>
+          <a class="block" href="#actus" @click="mobileOpen=false">Actus</a>
+          <a class="block" href="#galerie" @click="mobileOpen=false">Galerie</a>
+          <a class="block" href="#contact" @click="mobileOpen=false">Contact</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="accueil" class="relative overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1546553656-0e30f0b78a4b?q=80&w=1600&auto=format&fit=crop" class="w-full h-full object-cover" alt="Court de tennis" />
+      <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
+      <div class="max-w-2xl text-white">
+        <p class="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-xs tracking-wide mb-4">
+          <span class="iconify" data-icon="ph:lightning-duotone"></span> Saison <span x-text="season"></span>
+        </p>
+        <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight">Bienvenue au <span class="text-brand">TC11</span></h1>
+        <p class="mt-4 text-lg text-white/90">Club de tennis convivial, ouvert à toutes et tous — loisirs, compétition, école de tennis et stages pendant les vacances.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#adhesion" class="inline-flex items-center gap-2 bg-brand hover:bg-brand-dark text-white px-5 py-3 rounded-2xl shadow">
+            <span class="iconify" data-icon="ph:tennis-ball-duotone"></span> Rejoindre le club
+          </a>
+          <a href="#planning" class="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-5 py-3 rounded-2xl">
+            <span class="iconify" data-icon="ph:calendar-dots-duotone"></span> Voir le planning
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LE CLUB -->
+  <section id="club" class="py-16 sm:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <h2 class="text-3xl font-bold">Le club</h2>
+          <p class="mt-4 text-gray-600 dark:text-gray-300">Situé au cœur du 11e, le TC11 dispose de <strong>6 courts</strong> dont 2 couverts, d'un club-house chaleureux et d'un staff diplômé pour vous accompagner.</p>
+          <ul class="mt-6 space-y-3 text-gray-700 dark:text-gray-200">
+            <li class="flex items-start gap-3"><span class="iconify mt-1" data-icon="ph:check-circle-duotone"></span> Réservation en ligne 7j/7</li>
+            <li class="flex items-start gap-3"><span class="iconify mt-1" data-icon="ph:check-circle-duotone"></span> École de tennis enfants & adultes</li>
+            <li class="flex items-start gap-3"><span class="iconify mt-1" data-icon="ph:check-circle-duotone"></span> Équipes engagées en championnat</li>
+            <li class="flex items-start gap-3"><span class="iconify mt-1" data-icon="ph:check-circle-duotone"></span> Stages vacances & tournois homologués</li>
+          </ul>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <img class="rounded-2xl shadow object-cover h-48 sm:h-60 w-full" src="https://images.unsplash.com/photo-1512412046876-f386342eddb0?q=80&w=800&auto=format&fit=crop" alt="Club-house" />
+          <img class="rounded-2xl shadow object-cover h-48 sm:h-60 w-full" src="https://images.unsplash.com/photo-155 Jane?q=80&w=800&auto=format&fit=crop" alt="Court" onerror="this.src='https://images.unsplash.com/photo-1546553656-0e30f0b78a4b?q=80&w=800&auto=format&fit=crop'" />
+          <img class="rounded-2xl shadow object-cover h-48 sm:h-60 w-full" src="https://images.unsplash.com/photo-1521417531590-883f0c5d9a8e?q=80&w=800&auto=format&fit=crop" alt="Match" />
+          <img class="rounded-2xl shadow object-cover h-48 sm:h-60 w-full" src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=800&auto=format&fit=crop" alt="Balles" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ECOLE DE TENNIS -->
+  <section id="ecole" class="py-16 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-10">
+        <div>
+          <h2 class="text-3xl font-bold">École de tennis</h2>
+          <p class="mt-4 text-gray-600 dark:text-gray-300">Cours collectifs du lundi au samedi, par niveaux. Groupes enfants dès 5 ans, et créneaux spécifiques adultes. Essai gratuit sur demande.</p>
+          <div class="mt-6 grid sm:grid-cols-3 gap-4">
+            <div class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800">
+              <div class="text-sm text-gray-500">Enfants</div>
+              <div class="text-2xl font-bold">5–12 ans</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800">
+              <div class="text-sm text-gray-500">Ados</div>
+              <div class="text-2xl font-bold">13–17 ans</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800">
+              <div class="text-sm text-gray-500">Adultes</div>
+              <div class="text-2xl font-bold">Débutant → NC/15</div>
+            </div>
+          </div>
+          <a href="#contact" class="inline-flex mt-6 items-center gap-2 text-brand hover:underline"><span class="iconify" data-icon="ph:envelope"></span> Demander un essai</a>
+        </div>
+        <div class="rounded-2xl overflow-hidden shadow">
+          <div class="aspect-[16/10]" id="map"></div>
+          <div class="p-4 text-sm bg-gray-50 dark:bg-gray-800">Nous sommes au 11, rue des Aces, 75011 Paris (exemple). <a href="#contact" class="text-brand underline">Voir le contact</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EQUIPES -->
+  <section id="equipes" class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between">
+        <h2 class="text-3xl font-bold">Équipes</h2>
+        <div class="text-sm">
+          Filtrer :
+          <select x-model="teamFilter" class="bg-white/70 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2">
+            <option value="all">Toutes</option>
+            <option>Femmes</option>
+            <option>Hommes</option>
+            <option>Jeunes</option>
+          </select>
+        </div>
+      </div>
+      <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <template x-for="t in filteredTeams()" :key="t.id">
+          <article class="rounded-2xl bg-white dark:bg-gray-800 shadow p-5">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold" x-text="t.name"></h3>
+              <span class="text-xs inline-flex items-center gap-1 px-2 py-1 rounded-full bg-brand/10 text-brand" x-text="t.category"></span>
+            </div>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300" x-text="t.caption"></p>
+            <div class="mt-4 flex items-center gap-2 text-xs text-gray-500">
+              <span class="iconify" data-icon="ph:calendar"></span><span>Saison <span x-text="season"></span></span>
+            </div>
+          </article>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANNING -->
+  <section id="planning" class="py-16 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between">
+        <h2 class="text-3xl font-bold">Planning hebdo</h2>
+        <div class="flex items-center gap-2 text-sm">
+          <button @click="prevDay" class="px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800">◀</button>
+          <div class="px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800" x-text="currentWeekLabel"></div>
+          <button @click="nextDay" class="px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800">▶</button>
+        </div>
+      </div>
+      <div class="mt-6 overflow-x-auto">
+        <table class="w-full text-sm min-w-[720px]">
+          <thead>
+            <tr class="text-left text-gray-500">
+              <th class="py-3">Jour</th>
+              <th class="py-3">10:00</th>
+              <th class="py-3">12:00</th>
+              <th class="py-3">14:00</th>
+              <th class="py-3">16:00</th>
+              <th class="py-3">18:00</th>
+              <th class="py-3">20:00</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="d in weekView">
+              <tr class="border-t border-gray-200 dark:border-gray-800">
+                <td class="py-3 font-medium" x-text="d.day"></td>
+                <template x-for="slot in d.slots">
+                  <td class="py-2">
+                    <template x-if="slot">
+                      <span class="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-full" :class="slot.type==='match' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-200' : (slot.type==='cours' ? 'bg-brand/10 text-brand' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300')">
+                        <span class="iconify" :data-icon="slot.icon"></span>
+                        <span x-text="slot.label"></span>
+                      </span>
+                    </template>
+                  </td>
+                </template>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-4 text-sm text-gray-500">Besoin d'un créneau privatif ? <a href="#contact" class="text-brand underline">Contactez-nous</a>.</div>
+    </div>
+  </section>
+
+  <!-- TARIFS / ADHESION -->
+  <section id="tarifs" class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold">Tarifs & adhésion</h2>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <div class="rounded-2xl p-6 bg-white dark:bg-gray-800 shadow">
+          <div class="text-sm text-gray-500">Loisirs</div>
+          <div class="text-3xl font-extrabold">149€<span class="text-base font-medium text-gray-500">/an</span></div>
+          <ul class="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-300">
+            <li>Accès réservation 7j/7</li>
+            <li>1 invité/mois</li>
+            <li>Tarif réduit sur stages</li>
+          </ul>
+          <a href="#adhesion" class="mt-6 inline-flex items-center justify-center w-full bg-brand hover:bg-brand-dark text-white py-2.5 rounded-xl">Adhérer</a>
+        </div>
+        <div class="rounded-2xl p-6 bg-white dark:bg-gray-800 shadow ring-2 ring-brand">
+          <div class="text-sm text-gray-500">Compétition</div>
+          <div class="text-3xl font-extrabold">219€<span class="text-base font-medium text-gray-500">/an</span></div>
+          <ul class="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-300">
+            <li>+ Entraînement collectif</li>
+            <li>Engagements championnat</li>
+            <li>Maillot officiel offert</li>
+          </ul>
+          <a href="#adhesion" class="mt-6 inline-flex items-center justify-center w-full bg-brand hover:bg-brand-dark text-white py-2.5 rounded-xl">Adhérer</a>
+        </div>
+        <div class="rounded-2xl p-6 bg-white dark:bg-gray-800 shadow">
+          <div class="text-sm text-gray-500">Jeunes</div>
+          <div class="text-3xl font-extrabold">179€<span class="text-base font-medium text-gray-500">/an</span></div>
+          <ul class="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-300">
+            <li>École de tennis incluse</li>
+            <li>Stages vacances -20%</li>
+            <li>Prêt de raquette</li>
+          </ul>
+          <a href="#adhesion" class="mt-6 inline-flex items-center justify-center w-full bg-brand hover:bg-brand-dark text-white py-2.5 rounded-xl">Adhérer</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTUS -->
+  <section id="actus" class="py-16 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between">
+        <h2 class="text-3xl font-bold">Actualités</h2>
+        <div class="text-sm text-gray-500">Dernière mise à jour : <span x-text="lastUpdated"></span></div>
+      </div>
+      <div class="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <template x-for="p in posts" :key="p.id">
+          <article class="rounded-2xl overflow-hidden bg-white dark:bg-gray-800 shadow">
+            <img :src="p.image" class="w-full h-40 object-cover" :alt="p.title" />
+            <div class="p-4">
+              <h3 class="font-bold" x-text="p.title"></h3>
+              <p class="mt-2 text-sm text-gray-600 dark:text-gray-300" x-text="p.excerpt"></p>
+              <div class="mt-3 text-xs text-gray-500 flex items-center gap-2">
+                <span class="iconify" data-icon="ph:calendar"></span>
+                <time :datetime="p.date" x-text="formatDate(p.date)"></time>
+              </div>
+            </div>
+          </article>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERIE (Swiper) -->
+  <section id="galerie" class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold">Galerie</h2>
+      <div class="mt-6">
+        <div class="swiper gallery-swiper rounded-2xl overflow-hidden shadow">
+          <div class="swiper-wrapper">
+            <template x-for="g in gallery" :key="g">
+              <div class="swiper-slide">
+                <img :src="g" class="w-full h-[360px] object-cover" alt="Galerie TC11" />
+              </div>
+            </template>
+          </div>
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADHESION CTA -->
+  <section id="adhesion" class="py-16 bg-gradient-to-br from-brand to-brand-dark text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h2 class="text-3xl font-extrabold">Prêt·e à rejoindre le TC11 ?</h2>
+          <p class="mt-3 text-white/90">Inscription en ligne en 2 minutes. Paiement sécurisé. Réduction famille disponible.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <a href="mailto:contact@tc11.fr?subject=Adh%C3%A9sion%20TC11" class="inline-flex items-center gap-2 bg-white text-brand px-5 py-3 rounded-2xl shadow"><span class="iconify" data-icon="ph:envelope"></span> Par e‑mail</a>
+          <a href="https://wa.me/33000000000" target="_blank" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-2xl"><span class="iconify" data-icon="ph:whatsapp-logo"></span> WhatsApp</a>
+          <a href="#contact" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-2xl"><span class="iconify" data-icon="ph:phone"></span> Téléphone</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold">Contact</h2>
+      <div class="mt-6 grid lg:grid-cols-2 gap-10">
+        <div class="space-y-4 text-gray-700 dark:text-gray-300">
+          <p><span class="font-semibold">Adresse</span> — 11 rue des Aces, 75011 Paris</p>
+          <p><span class="font-semibold">Email</span> — <a href="mailto:contact@tc11.fr" class="text-brand underline">contact@tc11.fr</a></p>
+          <p><span class="font-semibold">Téléphone</span> — <a href="tel:+33123456789" class="text-brand underline">01 23 45 67 89</a></p>
+          <p class="text-sm text-gray-500">Horaires du club-house : Lun–Ven 10:00–20:00, Sam 10:00–18:00</p>
+          <form action="https://formspree.io/f/your-id" method="POST" class="grid gap-3">
+            <input required name="name" placeholder="Nom" class="px-4 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700" />
+            <input required type="email" name="email" placeholder="Email" class="px-4 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700" />
+            <textarea required name="message" rows="4" placeholder="Votre message..." class="px-4 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"></textarea>
+            <button class="inline-flex items-center justify-center bg-brand hover:bg-brand-dark text-white px-5 py-2.5 rounded-xl">Envoyer</button>
+          </form>
+        </div>
+        <div class="rounded-2xl overflow-hidden shadow">
+          <iframe title="Plan" class="w-full h-80" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=11+rue+des+Aces+75011+Paris&output=embed"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-10 border-t border-gray-200 dark:border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row gap-4 sm:items-center justify-between text-sm text-gray-500">
+      <div>© <span x-text="currentYear"></span> TC11. Tous droits réservés.</div>
+      <div class="flex items-center gap-4">
+        <a href="#" class="hover:text-brand">Mentions légales</a>
+        <a href="#" class="hover:text-brand">RGPD</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- APP SCRIPT -->
+  <script>
+    function tc11App() {
+      return {
+        darkMode: false,
+        mobileOpen: false,
+        season: '',
+        currentYear: new Date().getFullYear(),
+        lastUpdated: '',
+        teamFilter: 'all',
+        posts: [
+          { id: 1, title: 'Victoire de l\'équipe 1 !', date: '2025-05-26', excerpt: 'Belle victoire 4–1 face au TC Est.', image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800&auto=format&fit=crop' },
+          { id: 2, title: 'Inscriptions 2025/26 ouvertes', date: '2025-07-01', excerpt: 'Réservez votre place à l\'école de tennis.', image: 'https://images.unsplash.com/photo-1505751171121-59463f8a8df6?q=80&w=800&auto=format&fit=crop' },
+          { id: 3, title: 'Tournoi d\'été du 10 au 24 août', date: '2025-08-01', excerpt: 'Tableaux ouverts NC → 15/1. Buvette sur place.', image: 'https://images.unsplash.com/photo-1596995804697-5d4a2d24aa04?q=80&w=800&auto=format&fit=crop' }
+        ],
+        teams: [
+          { id: 1, name: 'Équipe 1', category: 'Hommes', caption: 'Prénat — Capitaine L. Martin' },
+          { id: 2, name: 'Équipe 2', category: 'Femmes', caption: 'Région — Capitaine C. Dubois' },
+          { id: 3, name: 'U16', category: 'Jeunes', caption: 'Interclubs Jeunes' },
+          { id: 4, name: 'U12', category: 'Jeunes', caption: 'Équipe en progression' },
+          { id: 5, name: 'Équipe 3', category: 'Hommes', caption: 'Départemental' },
+          { id: 6, name: 'Équipe 4', category: 'Femmes', caption: 'Départemental' }
+        ],
+        gallery: [
+          'https://images.unsplash.com/photo-1471295253337-3ceaaedca402?q=80&w=1600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1542772928-2219f4a31931?q=80&w=1600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1511783556643-8ba9f38f0f38?q=80&w=1600&auto=format&fit=crop'
+        ],
+        scheduleBase: [
+          // 7 jours * 6 créneaux (10,12,14,16,18,20)
+          { day: 'Lundi',    slots: [null, {type:'cours',icon:'ph:student-duotone',label:'Cours Adultes'}, null, {type:'match',icon:'ph:sword-duotone',label:'Interclub H'}, {type:'libre',icon:'ph:clock-duotone',label:'Libre'}, null] },
+          { day: 'Mardi',    slots: [{type:'cours',icon:'ph:student-duotone',label:'Jeunes U12'}, null, {type:'cours',icon:'ph:student-duotone',label:'Jeunes U16'}, null, {type:'match',icon:'ph:sword-duotone',label:'Interclub F'}, null] },
+          { day: 'Mercredi', slots: [{type:'cours',icon:'ph:student-duotone',label:'Mini-tennis'}, {type:'cours',icon:'ph:student-duotone',label:'Perfectionnement'}, null, null, {type:'libre',icon:'ph:clock-duotone',label:'Libre'}, {type:'libre',icon:'ph:clock-duotone',label:'Libre'}] },
+          { day: 'Jeudi',    slots: [null, {type:'cours',icon:'ph:student-duotone',label:'Adultes Déb.'}, null, {type:'match',icon:'ph:sword-duotone',label:'Interclub Jeunes'}, null, null] },
+          { day: 'Vendredi', slots: [null, null, {type:'cours',icon:'ph:student-duotone',label:'Cardio Tennis'}, null, {type:'libre',icon:'ph:clock-duotone',label:'Libre'}, {type:'match',icon:'ph:sword-duotone',label:'Soirée doubles'}] },
+          { day: 'Samedi',   slots: [{type:'cours',icon:'ph:student-duotone',label:'École'}, {type:'cours',icon:'ph:student-duotone',label:'École'}, null, {type:'match',icon:'ph:sword-duotone',label:'Interclubs'}, null, null] },
+          { day: 'Dimanche', slots: [null, null, {type:'match',icon:'ph:sword-duotone',label:'Tournoi'}, null, {type:'libre',icon:'ph:clock-duotone',label:'Libre'}, null] }
+        ],
+        weekIndex: 0,
+        get weekView(){ return this.scheduleBase },
+        get currentWeekLabel(){ const start = dayjs().add(this.weekIndex, 'week'); const end = start.add(6,'day'); return start.format('DD MMM') + ' → ' + end.format('DD MMM YYYY') },
+        init(){
+          this.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          this.season = (new Date().getMonth() >= 7) ? (new Date().getFullYear() + '/' + (new Date().getFullYear()+1)) : ((new Date().getFullYear()-1) + '/' + new Date().getFullYear());
+          this.lastUpdated = dayjs().format('DD MMMM YYYY');
+          // Swiper init
+          new Swiper('.gallery-swiper', { loop: true, pagination: { el: '.swiper-pagination', clickable: true }, navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' } });
+          // Leaflet carte (si on préfère Leaflet à l'iframe Google Maps)
+          const map = L.map('map');
+          map.setView([48.8575, 2.3700], 14); // Paris 11e (approx)
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
+          L.marker([48.8575, 2.3700]).addTo(map).bindPopup('TC11 — 11 rue des Aces, 75011');
+        },
+        toggleTheme(){ this.darkMode = !this.darkMode; localStorage.setItem('tc11-theme', this.darkMode ? 'dark' : 'light'); },
+        filteredTeams(){ if(this.teamFilter==='all') return this.teams; return this.teams.filter(t=>t.category===this.teamFilter); },
+        prevDay(){ this.weekIndex--; },
+        nextDay(){ this.weekIndex++; },
+        formatDate(d){ return dayjs(d).format('DD MMM YYYY') }
+      }
+    }
+    // Charger préférence de thème
+    (function(){
+      const saved = localStorage.getItem('tc11-theme');
+      if(saved==='dark') document.documentElement.classList.add('dark');
+    })();
+  </script>
+</body>
+</html>
