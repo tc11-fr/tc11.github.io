@@ -6,6 +6,7 @@
   <title>TC11 – Tennis Club</title>
   <meta name="description" content="TC11 — Tennis pour tous et toutes, du loisir à la compétition, pour enfants (à partir de 5 ans) et adultes." />
 
+  <style>[x-cloak]{display:none!important}</style>
   <!-- Palette TC11 (terre battue / balle) -->
   <style>
     :root{
@@ -86,19 +87,48 @@
 <body class="bg-white text-tc-ink">
   <!-- Header -->
   <header class="sticky top-0 z-40 backdrop-blur bg-white/70 border-b">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+    <div 
+      class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4"
+      x-data="{ open: false }"
+      x-init="
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener('change', e => { if(e.matches) open = false });
+      "
+    >
       <img src="assets/tc11-logo.png" alt="Logo TC11" class="w-10 h-10 rounded-md ring-2 ring-tc-yellow" />
       <div class="flex-1">
         <h1 class="font-extrabold tracking-tight text-lg">TC11</h1>
         <p class="text-xs text-slate-500">Tennis pour tous et toutes, du loisir à la compétition, pour enfants (à partir de 5 ans) et adultes.</p>
       </div>
+      <!-- Bouton menu mobile -->
+      <button
+        @click="open = !open"
+        class="md:hidden ml-auto p-2 rounded-lg hover:bg-slate-100 focus:outline-none"
+        aria-label="Ouvrir le menu"
+      >
+        <span class="iconify" data-icon="mdi:menu" style="font-size: 2rem;"></span>
+      </button>
+      <!-- Menu desktop -->
       <nav class="hidden md:flex gap-6 text-sm">
         <a href="#actus" class="hover:text-tc-orange">Actus</a>
         <a href="#galerie" class="hover:text-tc-orange">Galerie</a>
         <a href="#club" class="hover:text-tc-orange">Le Club</a>
         <a href="#contact" class="hover:text-tc-orange">Contact</a>
       </nav>
-      <a href="#resa" class="btn btn-primary ml-auto">Réserver un court</a>
+      <a href="#resa" class="btn btn-primary ml-2">Réserver un court</a>
+      <!-- Menu mobile déroulant : DOIT ÊTRE DANS LE MÊME x-data -->
+      <nav
+        x-show="open"
+        x-cloak
+        @click.away="open = false"
+        class="md:hidden bg-white border-t shadow-soft px-4 py-4 flex flex-col gap-4 text-base absolute top-full left-0 w-full z-50"
+      >
+        <a href="#actus" class="hover:text-tc-orange" @click="open = false">Actus</a>
+        <a href="#galerie" class="hover:text-tc-orange" @click="open = false">Galerie</a>
+        <a href="#club" class="hover:text-tc-orange" @click="open = false">Le Club</a>
+        <a href="#contact" class="hover:text-tc-orange" @click="open = false">Contact</a>
+        <a href="#resa" class="btn btn-primary w-full mt-2" @click="open = false">Réserver un court</a>
+      </nav>
     </div>
   </header>
 
