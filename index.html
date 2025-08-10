@@ -446,17 +446,22 @@
 
   <!-- Contact / Réservations -->
   <section id="contact" class="bg-white py-12 border-t">
-    <div class="max-w-3xl mx-auto px-4">
+  <div class="max-w-6xl mx-auto px-4">
       <h3 class="text-2xl font-extrabold mb-3">Contact</h3>
       <p class="text-slate-600 mb-6">Une question ? Envie de rejoindre le club ?</p>
-      <form action="https://formspree.io/f/your-id" method="POST" class="grid sm:grid-cols-2 gap-4">
-        <input class="border rounded-lg p-3" required name="name" placeholder="Nom" />
-        <input class="border rounded-lg p-3" required type="email" name="email" placeholder="Email" />
-        <input class="border rounded-lg p-3 sm:col-span-2" name="subject" placeholder="Sujet" />
-        <textarea class="border rounded-lg p-3 sm:col-span-2" rows="5" name="message" placeholder="Message"></textarea>
-        <button class="btn btn-primary sm:col-span-2" type="submit">Envoyer</button>
-      </form>
-      <!-- // ❗ Remplace l’action du formulaire par ton endpoint (Formspree/EmailJS).-->
+      <div class="rounded-xl overflow-hidden border shadow-soft bg-white">
+        <!-- Remplace l'URL ci-dessous par celle de ton Google Forms personnalisé -->
+        <div style="width:100%; min-width:0;">
+          <iframe 
+            src="https://docs.google.com/forms/d/e/1FAIpQLSdZt7SDzKeM0PVMJkpO0dtWv3LTZjGrRa5LxIqE12ATO8lDfA/viewform?embedded=true"
+            style="width:100%; min-width:0; height:950px; border:0; display:block; margin:0 auto;"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            >Chargement…</iframe>
+        </div>
+      </div>
+      <p class="text-xs text-slate-400 mt-2">Ce formulaire est hébergé par Google Forms.</p>
     </div>
   </section>
 
