@@ -18,9 +18,34 @@ button, a {
   text-decoration: none;
   font-size: 1rem;
 }
+.container { max-width: 420px; margin: 3rem auto; background: #fff; border-radius: 1rem; box-shadow: 0 6px 24px #0001; padding: 2rem; }
+label { font-weight: bold; display: block; margin-bottom: .5rem; }
+input[type=text] { width: 100%; padding: .7rem; border-radius: .5rem; border: 1px solid #ccc; margin-bottom: 1.2rem; font-size: 1rem; }
+button { background: #e15a0b; color: #fff; border: none; border-radius: .5rem; padding: .7rem 1.5rem; font-weight: bold; font-size: 1rem; cursor: pointer; }
+button:hover { background: #b94808; }
+.result { margin-top: 2rem; font-size: 1.1rem; }
 </style>
 </head>
 <body>
+
+<div class="container">
+  <h1>Testeur d’URL <code>mat://</code></h1>
+  <form id="matForm">
+    <label for="maturl">URL à tester :</label>
+    <input type="text" id="maturl" name="maturl" value="mat://club/57750181" required />
+    <button type="submit">Ouvrir</button>
+  </form>
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+  document.getElementById('matForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var url = document.getElementById('maturl').value.trim();
+    document.getElementById('result').textContent = 'Tentative d’ouverture de : ' + url;
+    window.location.href = url;
+  });
+</script>
 
 <h1>Test ouverture TenUp via schéma mat://</h1>
 <p>Appuyez sur un lien pour tester. Si l'app TenUp est installée et reconnait le chemin, elle devrait s'ouvrir.</p>
