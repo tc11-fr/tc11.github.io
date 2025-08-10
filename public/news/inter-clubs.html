@@ -47,6 +47,38 @@
       border:2px solid var(--tc-orange);
     }
     .btn-tenup:hover{ background:var(--tc-orange); color:#fff; }
+
+  /* Correction affichage listes et paragraphes dans le contenu principal */
+  main ul, .prose ul { list-style-type: disc; margin-left: 2em; margin-bottom: 1.2em; }
+  main ol, .prose ol { list-style-type: decimal; margin-left: 2em; margin-bottom: 1.2em; }
+  main li, .prose li { margin-bottom: 0.4em; }
+  main p, .prose p { margin-bottom: 1.2em; }
+  main h2, .prose h2 { margin-top: 2em; margin-bottom: 0.7em; }
+  main figure, .prose figure { margin: 2em 0; }
+    main img, .prose img {
+      max-width: 300px;
+      height: auto;
+      float: right;
+      margin: 0 0 1.2em 2em;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+      background: #fff;
+      /* Pour éviter que l'image ne dépasse du parent sur mobile */
+      width: 100%;
+      max-width: 300px;
+      max-height: 70vh;
+      object-fit: contain;
+      box-sizing: border-box;
+    }
+    @media (max-width: 700px) {
+      main img, .prose img {
+        float: none;
+        display: block;
+        margin: 1.2em auto;
+        width: 100%;
+        max-width: 95vw;
+      }
+    }
   </style>
 
   <!-- Tailwind -->
@@ -89,7 +121,7 @@
         <a href="/#galerie" class="hover:text-tc-orange">Galerie</a>
         <a href="/#club" class="hover:text-tc-orange">Le Club</a>
         <a href="/#contact" class="hover:text-tc-orange">Contact</a>
-        <a href="https://tenup.fft.fr/club/57750181/reservations" class="btn btn-primary ml-2">Réserver un court</a>
+        <a href="#" class="btn btn-primary ml-2" onclick="openTenUp(event)">Mon espace TenUp</a>
       </nav>
       <nav x-show="open" x-cloak @click.away="open=false"
            class="md:hidden bg-white border-t shadow-soft px-4 py-4 flex flex-col gap-4 text-base absolute top-full left-0 w-full z-50">
@@ -97,7 +129,7 @@
         <a href="/#galerie" class="hover:text-tc-orange" @click="open=false">Galerie</a>
         <a href="/#club" class="hover:text-tc-orange" @click="open=false">Le Club</a>
         <a href="/#contact" class="hover:text-tc-orange" @click="open=false">Contact</a>
-        <a href="https://tenup.fft.fr/club/57750181/reservations" class="btn btn-primary w-full mt-2" @click="open=false">Réserver un court</a>
+        <a href="#" class="btn btn-primary w-full mt-2" @click="open=false" onclick="openTenUp(event)">Mon espace TenUp</a>
       </nav>
     </div>
   </header>
@@ -131,12 +163,12 @@
   </section>
 
   <!-- Corps de l’article -->
-  <main class="max-w-3xl mx-auto px-4 py-10 prose prose-neutral">
+  <main class="max-w-5xl mx-auto px-2 md:px-8 py-10 prose prose-neutral" style="overflow:hidden;"
+  >
     <p>
       Un grand bravo à <strong>l’équipe 1</strong> qui s’impose <strong>4-2</strong> ce week-end lors de la rencontre d’interclubs !
       Une ambiance au top sur les courts et au bord du terrain.
     </p>
-
     <h2>Les points clés</h2>
     <ul>
       <li>Simple 1 : victoire TC11</li>
@@ -145,15 +177,11 @@
       <li>Simple 4 : victoire TC11</li>
       <li>Double décisif : victoire TC11</li>
     </ul>
-
     <p>
       Merci au public présent et aux bénévoles pour l’organisation. Prochaine rencontre le week-end prochain — on vous attend nombreux !
     </p>
 
-    <figure>
-      <img src="/assets/news/interclubs-action.jpg" alt="Moment de la rencontre — interclubs" />
-      <figcaption>Moments forts de la rencontre — crédit TC11.</figcaption>
-    </figure>
+
 
     <h2>Infos pratiques</h2>
     <p>
@@ -161,7 +189,41 @@
       et suivez les coulisses sur <a href="https://www.instagram.com/tc11assb/" target="_blank" rel="noopener">Instagram @tc11assb</a>.
     </p>
 
-    <hr />
+    <!-- Galerie d'images -->
+    <div 
+      x-data="{
+        gallery: [
+          {src: '/assets/news/interclubs-action.jpg', alt: 'Moment de la rencontre — interclubs'},
+          {src: '/assets/news/interclubs-cover.jpg', alt: 'Autre Moment de la rencontre — interclubs'}
+        ],
+        showLightbox: false,
+        lightboxIndex: 0,
+        openLightbox(idx) { this.lightboxIndex = idx; this.showLightbox = true; },
+        closeLightbox() { this.showLightbox = false; }
+      }"
+      class="max-w-5xl mx-auto px-2 md:px-8 pb-12"
+    >
+      <div class="flex flex-wrap gap-6 mb-8">
+        <template x-for="(img, idx) in gallery" :key="img.src">
+          <figure class="w-[140px] cursor-pointer" @click="openLightbox(idx)">
+            <img :src="img.src" :alt="img.alt" class="rounded-lg shadow hover:opacity-80 transition" />
+            <figcaption class="text-xs text-center mt-2" x-text="img.alt"></figcaption>
+          </figure>
+        </template>
+      </div>
+
+      <!-- Lightbox -->
+      <div x-show="showLightbox" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/80" @click.self="closeLightbox()">
+        <div class="relative max-w-full max-h-full flex flex-col items-center">
+          <button class="absolute top-2 right-2 text-white text-3xl" @click="closeLightbox()" aria-label="Fermer">&times;</button>
+          <button class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white text-4xl rounded-full w-12 h-12 flex items-center justify-center z-10" @click.stop="lightboxIndex = (lightboxIndex-1+gallery.length)%gallery.length" aria-label="Précédent">&#8592;</button>
+          <img :src="gallery[lightboxIndex].src" :alt="gallery[lightboxIndex].alt" style="max-width:90vw; max-height:90vh; width:auto; height:auto; display:block; margin:auto;" class="rounded-xl shadow-lg" />
+          <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white text-4xl rounded-full w-12 h-12 flex items-center justify-center z-10" @click.stop="lightboxIndex = (lightboxIndex+1)%gallery.length" aria-label="Suivant">&#8594;</button>
+          <div class="text-white mt-4 text-center text-sm" x-text="gallery[lightboxIndex].alt"></div>
+        </div>
+      </div>
+    </div>
+
     <p class="text-sm text-slate-500">
       Publié le <time datetime="2025-08-09">9 août 2025</time> • Par TC11
     </p>
@@ -191,6 +253,34 @@
   <!-- Mini scripts -->
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+  <!-- Ajout du script deep link TenUp -->
+  <script>
+    function openTenUp(e) {
+      e.preventDefault();
+      var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      var appUrl = 'mat://home';
+      var webUrl = 'https://tenup.fft.fr/accueil';
+      if (isMobile) {
+        var timeout = setTimeout(function() { window.location.href = webUrl; }, 700);
+        window.location.href = appUrl;
+      } else {
+        window.open(webUrl, '_blank');
+      }
+    }
+    function openTenUpClub(e) {
+      e.preventDefault();
+      var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      var appUrl = 'mat://club/57750181';
+      var webUrl = 'https://tenup.fft.fr/club/57750181';
+      if (isMobile) {
+        var timeout = setTimeout(function() { window.location.href = webUrl; }, 700);
+        window.location.href = appUrl;
+      } else {
+        window.open(webUrl, '_blank');
+      }
+    }
   </script>
 </body>
 </html>

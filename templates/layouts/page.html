@@ -1,4 +1,51 @@
-{#extends layouts/base.html}
-{#block main}
-  {#insert main /}
-{/block}
+---
+layout: main
+---
+
+<!-- Hero section (extrait d'index.html) -->
+<section class="relative overflow-hidden">
+  <!-- Image de fond -->
+  <div class="absolute inset-0">
+    <img
+      src="/assets/hero-banner.jpg"
+      alt="TC11 groupe"
+      class="w-full h-full object-cover"
+      style="object-position:center 35%;"
+      loading="eager" fetchpriority="high"
+    />
+    <!-- Voile pour lisibilité -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/35 to-black/55"></div>
+  </div>
+
+  <div class="relative max-w-6xl mx-auto px-4 py-16 md:py-24">
+    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold"
+          style="background:var(--tc-yellow); color:#111;">TC11</span>
+    <h2 class="mt-3 text-4xl md:text-5xl font-extrabold leading-tight text-white">
+      Bienvenue au <span style="color:var(--tc-yellow)">TC11</span>
+    </h2>
+    <p class="mt-3 text-white/90 text-lg max-w-xl">
+      Entraînements, équipes, tournois.
+    </p>
+    <div class="mt-6 flex flex-wrap items-center gap-3">
+      <a href="#actus" class="btn btn-primary">Voir les actus</a>
+
+      <!-- Icônes rondes -->
+      <a class="icon-btn" aria-label="Instagram TC11"
+         href="https://www.instagram.com/tc11assb/" target="_blank" rel="noopener">
+        <span class="iconify" data-icon="mdi:instagram"></span>
+      </a>
+
+      <a class="icon-btn" aria-label="Facebook TC11"
+         href="http://www.facebook.com/tennisclub11" target="_blank" rel="noopener">
+        <span class="iconify" data-icon="mdi:facebook"></span>
+      </a>
+
+      <!-- Lien TenUp -->
+      <a class="btn-tenup" href="#" onclick="openTenUpClub(event)">
+        <span class="iconify" data-icon="mdi:tennis-ball"></span>
+        TenUp
+      </a>
+    </div>
+  </div>
+</section>
+{#insert /}
