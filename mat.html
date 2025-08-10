@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Test ouverture TenUp</title>
+<style>
+body { font-family: sans-serif; padding: 1rem; }
+h1 { font-size: 1.5rem; }
+button, a {
+  display: block;
+  margin: .5rem 0;
+  padding: 1rem;
+  background: #e15a0b;
+  color: white;
+  text-align: center;
+  border-radius: .5rem;
+  text-decoration: none;
+  font-size: 1rem;
+}
+</style>
+</head>
+<body>
+
+<h1>Test ouverture TenUp via schéma mat://</h1>
+<p>Appuyez sur un lien pour tester. Si l'app TenUp est installée et reconnait le chemin, elle devrait s'ouvrir.</p>
+
+<a href="mat://">mat://</a>
+<a href="mat://auth_callback">mat://auth_callback</a>
+<a href="mat://club/57750181">mat://club/57750181</a>
+<a href="mat://open/club/57750181">mat://open/club/57750181</a>
+<a href="mat://reservation/club/57750181">mat://reservation/club/57750181</a>
+<a href="mat://match">mat://match</a>
+<a href="mat://home">mat://home</a>
+<a href="mat://search">mat://search</a>
+<a href="mat://profile">mat://profile</a>
+
+<hr>
+<p>⚠️ Les deep links exacts sont inconnus, donc la plupart peuvent ne rien faire.<br>
+Sur iOS, le lien doit être cliqué (pas déclenché par JS automatiquement) pour s’ouvrir.</p>
+
+</body>
+</html>
