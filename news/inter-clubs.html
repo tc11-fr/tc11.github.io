@@ -121,7 +121,7 @@
         <a href="/#galerie" class="hover:text-tc-orange">Galerie</a>
         <a href="/#club" class="hover:text-tc-orange">Le Club</a>
         <a href="/#contact" class="hover:text-tc-orange">Contact</a>
-        <a href="https://tenup.fft.fr/club/57750181/reservations" class="btn btn-primary ml-2">Réserver un court</a>
+        <a href="#" class="btn btn-primary ml-2" onclick="openTenUp(event)">Mon espace TenUp</a>
       </nav>
       <nav x-show="open" x-cloak @click.away="open=false"
            class="md:hidden bg-white border-t shadow-soft px-4 py-4 flex flex-col gap-4 text-base absolute top-full left-0 w-full z-50">
@@ -129,7 +129,7 @@
         <a href="/#galerie" class="hover:text-tc-orange" @click="open=false">Galerie</a>
         <a href="/#club" class="hover:text-tc-orange" @click="open=false">Le Club</a>
         <a href="/#contact" class="hover:text-tc-orange" @click="open=false">Contact</a>
-        <a href="https://tenup.fft.fr/club/57750181/reservations" class="btn btn-primary w-full mt-2" @click="open=false">Réserver un court</a>
+        <a href="#" class="btn btn-primary w-full mt-2" @click="open=false" onclick="openTenUp(event)">Mon espace TenUp</a>
       </nav>
     </div>
   </header>
@@ -253,6 +253,34 @@
   <!-- Mini scripts -->
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+  <!-- Ajout du script deep link TenUp -->
+  <script>
+    function openTenUp(e) {
+      e.preventDefault();
+      var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      var appUrl = 'mat://home';
+      var webUrl = 'https://tenup.fft.fr/accueil';
+      if (isMobile) {
+        var timeout = setTimeout(function() { window.location.href = webUrl; }, 700);
+        window.location.href = appUrl;
+      } else {
+        window.open(webUrl, '_blank');
+      }
+    }
+    function openTenUpClub(e) {
+      e.preventDefault();
+      var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      var appUrl = 'mat://club/57750181';
+      var webUrl = 'https://tenup.fft.fr/club/57750181';
+      if (isMobile) {
+        var timeout = setTimeout(function() { window.location.href = webUrl; }, 700);
+        window.location.href = appUrl;
+      } else {
+        window.open(webUrl, '_blank');
+      }
+    }
   </script>
 </body>
 </html>
