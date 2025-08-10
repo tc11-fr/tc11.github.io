@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TC11 – Tennis Club</title>
-  <meta name="description" content="TC11 — Tennis pour tous et toutes, du loisir à la compétition, pour enfants (à partir de 5 ans) et adultes." />
+  <meta name="description" content="Tennis pour tous et toutes, du loisir à la compétition, pour enfants et adultes." />
 
   <style>[x-cloak]{display:none!important}</style>
   <!-- Palette TC11 (terre battue / balle) -->
@@ -127,17 +127,28 @@
         <a href="#galerie" class="hover:text-tc-orange" @click="open = false">Galerie</a>
         <a href="#club" class="hover:text-tc-orange" @click="open = false">Le Club</a>
         <a href="#contact" class="hover:text-tc-orange" @click="open = false">Contact</a>
-  <a href="#" class="btn btn-primary w-full mt-2" @click="open = false" onclick="openTenUp(event)">Réserver un court</a>
+  <a href="#" class="btn btn-primary w-full mt-2" @click="open = false" onclick="openTenUp(event)">Mon espace TenUp</a>
   <script>
     function openTenUp(e) {
       e.preventDefault();
       var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      var appUrl = 'mat://club/57750181/reservations';
-      var webUrl = 'https://tenup.fft.fr/club/57750181/reservations';
+      var appUrl = 'mat://home';
+      var webUrl = 'https://tenup.fft.fr/accueil';
       if (isMobile) {
         var timeout = setTimeout(function() { window.location.href = webUrl; }, 700);
         window.location.href = appUrl;
-        // Si l'app s'ouvre, le timeout est annulé automatiquement par le navigateur
+      } else {
+        window.open(webUrl, '_blank');
+      }
+    }
+    function openTenUpClub(e) {
+      e.preventDefault();
+      var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      var appUrl = 'mat://club/57750181';
+      var webUrl = 'https://tenup.fft.fr/club/57750181';
+      if (isMobile) {
+        var timeout = setTimeout(function() { window.location.href = webUrl; }, 700);
+        window.location.href = appUrl;
       } else {
         window.open(webUrl, '_blank');
       }
@@ -186,7 +197,7 @@
         </a>
 
         <!-- Lien TenUp -->
-        <a class="btn-tenup" href="https://tenup.fft.fr/club/57750181" target="_blank" rel="noopener">
+        <a class="btn-tenup" href="#" onclick="openTenUpClub(event)">
           <span class="iconify" data-icon="mdi:tennis-ball"></span>
           TenUp
         </a>
