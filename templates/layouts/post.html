@@ -1,19 +1,22 @@
 ---
 layout: main
+attachments: []
+gallery: []
+cover: /assets/hero-banner.jpg
 ---
 
 <!-- Hero article (extrait d'inter-clubs.html) -->
 <section class="relative overflow-hidden">
   <div class="absolute inset-0">
-    <img src="{cover ?: '/assets/news/interclubs-cover.jpg'}" alt="{title}" class="w-full h-60 md:h-80 object-cover" />
+    <img src="{page.data.cover ?: '/assets/hero-banner.jpg'}" alt="{page.title}" class="w-full h-60 md:h-80 object-cover" />
     <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/60"></div>
   </div>
   <div class="relative max-w-6xl mx-auto px-4 py-10 md:py-16 text-white">
     <div class="flex items-center gap-2">
-      <span class="chip">{category ?: 'Actu'}</span>
-      <time class="text-sm text-white/90" datetime="{date}">{date_fr ?: date}</time>
+      <span class="chip">{page.data.category ?: 'Actu'}</span>
+      <time class="text-sm text-white/90" datetime="{page.date}">{page.date.format('dd MMM yyyy')}</time>
     </div>
-    <h1 class="mt-3 text-3xl md:text-5xl font-extrabold leading-tight">{title}</h1>
+    <h1 class="mt-3 text-3xl md:text-5xl font-extrabold leading-tight">{page.title}</h1>
     <p class="mt-2 text-white/90 max-w-2xl">{summary ?: ''}</p>
     <div class="mt-4 flex items-center gap-3">
       <a href="/{backlink ?: '#actus'}" class="btn bg-white text-tc-ink">← Retour aux actus</a>
@@ -22,10 +25,62 @@ layout: main
         <span class="iconify" data-icon="mdi:facebook"></span>
       </a>
       <a class="icon-btn" aria-label="Partager sur X/Twitter"
-         href="https://twitter.com/intent/tweet?text={title|url_encode}&url={share_url ?: ''}" target="_blank" rel="noopener">
+         href="https://twitter.com/intent/tweet?text={page.title}&url={share_url ?: ''}" target="_blank" rel="noopener">
         <span class="iconify" data-icon="mdi:twitter"></span>
       </a>
     </div>
   </div>
 </section>
-{#insert /}
+
+<section id="post-content" class="max-w-6xl mx-auto px-4 py-12 prose prose-slate">
+  {#insert /}
+  {#if page.data.attachments.size > 0}
+    <h2>Documents à télécharger</h2>
+    <ul>
+      {#for file in page.data.attachments}
+        <li>
+          <a href="{file.url}" target="_blank">{file.title}</a>
+        </li>
+      {/for}
+    </ul>
+  {/if}
+
+  {#if page.data.gallery.size > 0}
+    <!-- Galerie d'images -->
+    <div 
+      x-data="\{
+        gallery: [
+          {#for img in page.data.gallery}
+            \{src: '{img.url}', alt: '{img.title}' \}{#if !img_isLast},{/if}
+          {/for}
+        ],
+        showLightbox: false,
+        lightboxIndex: 0,
+        openLightbox(idx) { this.lightboxIndex = idx; this.showLightbox = true; },
+        closeLightbox() { this.showLightbox = false; }
+      \}"
+      
+    >
+      <h2>Galerie d'images</h2>
+      <div class="flex flex-wrap gap-6 mb-8">
+        <template x-for="(img, idx) in gallery" :key="img.src">
+          <figure class="w-[140px] cursor-pointer" @click="openLightbox(idx)">
+            <img :src="img.src" :alt="img.alt" class="rounded-lg shadow hover:opacity-80 transition" />
+            <figcaption class="text-xs text-center mt-2" x-text="img.alt"></figcaption>
+          </figure>
+        </template>
+      </div>
+
+      <!-- Lightbox -->
+      <div x-show="showLightbox" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/80" @click.self="closeLightbox()">
+        <div class="relative max-w-full max-h-full flex flex-col items-center">
+          <button class="absolute top-2 right-2 text-white text-3xl" @click="closeLightbox()" aria-label="Fermer">&times;</button>
+          <button class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white text-4xl rounded-full w-12 h-12 flex items-center justify-center z-10" @click.stop="lightboxIndex = (lightboxIndex-1+gallery.length)%gallery.length" aria-label="Précédent">&#8592;</button>
+          <img :src="gallery[lightboxIndex].src" :alt="gallery[lightboxIndex].alt" style="max-width:90vw; max-height:90vh; width:auto; height:auto; display:block; margin:auto;" class="rounded-xl shadow-lg" />
+          <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white text-4xl rounded-full w-12 h-12 flex items-center justify-center z-10" @click.stop="lightboxIndex = (lightboxIndex+1)%gallery.length" aria-label="Suivant">&#8594;</button>
+          <div class="text-white mt-4 text-center text-sm" x-text="gallery[lightboxIndex].alt"></div>
+        </div>
+      </div>
+    </div>
+  {/if}
+</section>
