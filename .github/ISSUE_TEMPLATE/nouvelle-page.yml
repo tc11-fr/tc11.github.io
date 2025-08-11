@@ -1,0 +1,29 @@
+name: Proposer une nouvelle page ou actualité
+description: Suggérez une nouvelle page ou actualité pour le site TC11
+title: "[Page] "
+labels: ["contenu"]
+body:
+  - type: input
+    id: titre
+    attributes:
+      label: Titre de la page
+      placeholder: "Exemple : Résultats Interclubs 2025"
+    validations:
+      required: true
+  - type: textarea
+    id: contenu
+    attributes:
+      label: Contenu (Markdown accepté)
+      placeholder: "Rédigez ici le texte de la page ou de l’actualité…"
+    validations:
+      required: true
+  - type: input
+    id: categorie
+    attributes:
+      label: Catégorie
+      placeholder: "Compétitions, Club, Jeunes…"
+  - type: input
+    id: date
+    attributes:
+      label: Date de publication (AAAA-MM-JJ)
+      placeholder: "2025-08-09"
