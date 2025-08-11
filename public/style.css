@@ -26,4 +26,41 @@ body{font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ari
   border:2px solid var(--tc-orange);
 }
 .btn-tenup:hover{ background:var(--tc-orange); color:#fff; }
+ /* Correction affichage listes et paragraphes dans le contenu principal */
+.prose ul { list-style-type: disc; margin-left: 2em; margin-bottom: 1.2em; }
+.prose ol { list-style-type: decimal; margin-left: 2em; margin-bottom: 1.2em; }
+.prose li { margin-bottom: 0.4em; }
+.prose p { margin-bottom: 1.2em; }
+.prose h2 { 
+  margin-top: 2em;
+  margin-bottom: 0.7em;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.prose figure { margin: 2em 0; }
+.prose img {
+  max-width: 300px;
+  height: auto;
+  float: right;
+  margin: 0 0 1.2em 2em;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  background: #fff;
+  /* Pour éviter que l'image ne dépasse du parent sur mobile */
+  width: 100%;
+  max-width: 300px;
+  max-height: 70vh;
+  object-fit: contain;
+  box-sizing: border-box;
+}
+@media (max-width: 700px) {
+  .prose img {
+    float: none;
+    display: block;
+    margin: 1.2em auto;
+    width: 100%;
+    max-width: 95vw;
+  }
+}
 [x-cloak]{display:none!important}
