@@ -5,6 +5,7 @@ layout: layouts/post.html
 cover: ./terrebattue.png
 category: Club
 date: 2024-12-06
+labelDetails: En savoir plus →
 attachments:
   - title: Bon pour pouvoir
     url: ./bon-pour-pouvoir.pdf
