@@ -1,0 +1,39 @@
+name: Issue to Markdown PR
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  issue-to-pr:
+    if: github.event.issue.labels.*.name contains 'contenu'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Générer le fichier Markdown depuis l’issue
+        id: generate
+        run: |
+          TITLE="$(jq -r '.issue.title' "$GITHUB_EVENT_PATH" | sed 's/^\[Page\] //')"
+          BODY="$(jq -r '.issue.body' "$GITHUB_EVENT_PATH")"
+          CATEGORIE="$(echo "$BODY" | grep -A1 'Catégorie' | tail -n1)"
+          DATE="$(echo "$BODY" | grep -A1 'Date de publication' | tail -n1)"
+          CONTENU="$(echo "$BODY" | awk '/Contenu \(Markdown accepté\)/{getline; print; exit}')"
+          FILENAME="content/posts/$(date +%s)-$(echo "$TITLE" | tr ' ' '-' | tr '[:upper:]' '[:lower:]').md"
+          echo "---" > "$FILENAME"
+          echo "title: \"$TITLE\"" >> "$FILENAME"
+          echo "category: \"$CATEGORIE\"" >> "$FILENAME"
+          echo "date: \"$DATE\"" >> "$FILENAME"
+          echo "layout: layouts/post.html" >> "$FILENAME"
+          echo "---" >> "$FILENAME"
+          echo "" >> "$FILENAME"
+          echo "$CONTENU" >> "$FILENAME"
+
+      - name: Créer la Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "Ajout d’une page depuis une issue"
+          branch: issue-page-${{ github.event.issue.number }}
+          title: "Ajout d’une page : ${{ github.event.issue.title }}"
+          body: "Page générée automatiquement depuis l’issue #${{ github.event.issue.number }}."
+          add-paths: content/posts/*.md
