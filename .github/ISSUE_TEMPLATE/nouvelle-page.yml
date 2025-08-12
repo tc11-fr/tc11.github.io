@@ -17,13 +17,14 @@ body:
       placeholder: "Rédigez ici le texte de la page ou de l’actualité…"
     validations:
       required: true
-  - type: input
+  - type: dropdown
     id: categorie
     attributes:
       label: Catégorie
-      placeholder: "Compétitions, Club, Jeunes…"
-  - type: input
-    id: date
-    attributes:
-      label: Date de publication (AAAA-MM-JJ)
-      placeholder: "2025-08-09"
+      options:
+        - Compétitions
+        - Club
+        - Jeunes
+        - Stages
+        - Animations
+        - Infos pratiques
