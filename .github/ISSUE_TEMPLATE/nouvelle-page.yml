@@ -32,11 +32,8 @@ body:
     id: date
     attributes:
       label: Date de publication
-      description: "Sélectionnez la date de publication (format AAAA-MM-JJ)"
-      inputType: date
-      default: "{{date}}"
-    validations:
-      required: true
+      description: "Laissez vide pour utiliser la date du jour, ou indiquez une date précise au format AAAA-MM-JJ (exemple : 2025-08-12)"
+      placeholder: "2025-08-12"
   - type: dropdown
     id: lienTexte
     attributes:
@@ -50,23 +47,21 @@ body:
         - Voir l’événement →
         - Voir les résultats →
         - Inscrire mon enfant →
-        - Voir les photos →
         - Je participe →
-        - Voir les photos →
         - Voir le calendrier →
         - Infos et inscription →
+        - Voir les photos →
   - type: textarea
     id: fichiers
     attributes:
       label: Fichiers à télécharger
       description: |
-        Collez ici les liens vers les fichiers à joindre (PDF, doc, etc.), ou décrivez les fichiers à ajouter.  
-        Vous pouvez aussi ajouter des fichiers en pièce jointe à l’issue.
+        Collez ici les fichiers à joindre (PDF, doc, etc.), et décrivez leur contenu (texte entre crochets).
   - type: textarea
     id: galerie
     attributes:
       label: Photos de la galerie de l’actu
       description: |
-        Collez ici les liens vers les images à afficher dans la galerie, ou décrivez les photos à ajouter.  
-        Vous pouvez aussi ajouter des images en pièce jointe à l’issue.
+        Collez ici les images à afficher dans la galerie, et décrivez les photos ajoutées (texte entre crochets).
+
 
