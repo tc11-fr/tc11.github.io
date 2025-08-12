@@ -28,6 +28,8 @@ body:
         - Stages
         - Animations
         - Infos pratiques
+    validations:
+      required: true
   - type: input
     id: date
     attributes:
@@ -51,6 +53,8 @@ body:
         - Voir le calendrier →
         - Infos et inscription →
         - Voir les photos →
+    validations:
+      required: true
   - type: textarea
     id: fichiers
     attributes:
