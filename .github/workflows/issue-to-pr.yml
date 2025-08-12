@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Afficher le JSON de l'event
+        run: cat "$GITHUB_EVENT_PATH"
+
       - name: Générer le fichier Markdown depuis l’issue
         id: generate
         run: |
