@@ -28,3 +28,45 @@ body:
         - Stages
         - Animations
         - Infos pratiques
+  - type: input
+    id: date
+    attributes:
+      label: Date de publication
+      description: "Sélectionnez la date de publication (format AAAA-MM-JJ)"
+      inputType: date
+      default: "{{date}}"
+    validations:
+      required: true
+  - type: dropdown
+    id: lienTexte
+    attributes:
+      label: Label du bouton (pour accéder à la page)
+      options:
+        - Voir le détail →
+        - En savoir plus →
+        - Je m’inscris →
+        - Découvrir →
+        - Renseignements →
+        - Voir l’événement →
+        - Voir les résultats →
+        - Inscrire mon enfant →
+        - Voir les photos →
+        - Je participe →
+        - Voir les photos →
+        - Voir le calendrier →
+        - Infos et inscription →
+  - type: textarea
+    id: fichiers
+    attributes:
+      label: Fichiers à télécharger
+      description: |
+        Collez ici les liens vers les fichiers à joindre (PDF, doc, etc.), ou décrivez les fichiers à ajouter.  
+        Vous pouvez aussi ajouter des fichiers en pièce jointe à l’issue.
+  - type: textarea
+    id: galerie
+    attributes:
+      label: Photos de la galerie de l’actu
+      description: |
+        Collez ici les liens vers les images à afficher dans la galerie, ou décrivez les photos à ajouter.  
+        Vous pouvez aussi ajouter des images en pièce jointe à l’issue.
+

@@ -15,7 +15,9 @@ jobs:
         id: generate
         run: |
           TITLE="$(jq -r '.issue.title' "$GITHUB_EVENT_PATH" | sed 's/^\[Page\] //')"
-          BODY="$(jq -r '.issue.body' "$GITHUB_EVENT_PATH")"          
+          BODY="$(jq -r '.issue.body' "$GITHUB_EVENT_PATH")"
+          echo "BODY:"
+          echo "$BODY"
           extract_block() {
             awk -v header="$1" '
               $0 ~ header {
